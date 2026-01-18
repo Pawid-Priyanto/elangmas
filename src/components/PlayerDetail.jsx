@@ -34,7 +34,7 @@ const PlayerDetail = () => {
       <div className="bg-blue-900 h-60 relative flex items-center justify-center">
         <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1600')" }}></div>
         <h1 className="relative text-white text-3xl font-black uppercase tracking-widest">Detail Pemain</h1>
-        <Link to="/academy" className="absolute top-8 left-8 text-white flex items-center gap-2 hover:text-yellow-400 transition-colors">
+        <Link to="/" className="absolute top-8 left-8 text-white flex items-center gap-2 hover:text-yellow-400 transition-colors">
           <ChevronLeft size={20} /> Kembali
         </Link>
       </div>
