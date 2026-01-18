@@ -1,25 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, X, Mail, Instagram, Youtube, MapPin, ChevronDown } from 'lucide-react';
 import logoElangMas from "./assets/logo/logo.png"
+import Academy from "./components/AcademySection"
+import JadwalSection from "./components/MatchSection"
+import Footer from "./components/Footer"
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
+import PlayerDetail from './components/PlayerDetail';
+import PelatihDetail from './components/PelatihDetail'
+
 
 // ========================================
 // COMPONENT 1: Header Component
 // ========================================
 const Header = ({ mobileMenuOpen, setMobileMenuOpen }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const navItems = [
     { name: 'HOME', href: '#home' },
-    { name: 'TENTANG ELANG MAS', href: '#about', dropdown: true },
-    { name: 'ACADEMY', href: '#academy', dropdown: true },
-    { name: 'ARTIKEL', href: '#articles' },
-    { name: 'HUBUNGI KAMI', href: '#contact' },
+    { name: 'TENTANG ELANG MAS', href: '#about' },
+    { name: 'ACADEMY', href: '#academy' },
+    // { name: 'ARTIKEL', href: '#articles' },
+    { name: 'HUBUNGI KAMI', href: '#footer' },
   ];
+
+  const handleNavClick = (e, targetId) => {
+    e.preventDefault();
+    setMobileMenuOpen(false);
+
+    if (location.pathname === '/') {
+      // Jika sudah di Home, langsung scroll
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // Jika di halaman Detail, pindah ke Home dulu dengan state
+      navigate('/', { state: { scrollTo: targetId } });
+    }
+  };
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-4">
           {/* Logo Section */}
-          <div className="flex items-center space-x-3">
+         <Link to="/" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="flex items-center space-x-3">
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-transparant rounded-lg flex items-center justify-center shadow-lg">
               <img 
                 src={logoElangMas} 
@@ -34,7 +60,7 @@ const Header = ({ mobileMenuOpen, setMobileMenuOpen }) => {
               </div>
               <h1 className="text-lg font-bold text-gray-800">Elang Mas Academy</h1>
             </div>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-6">
@@ -42,10 +68,10 @@ const Header = ({ mobileMenuOpen, setMobileMenuOpen }) => {
               <a
                 key={item.name}
                 href={item.href}
+                // onClick={(e) => handleNavClick(e, item.href)}
                 className="text-sm font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 flex items-center"
               >
                 {item.name}
-                {item.dropdown && <ChevronDown className="w-4 h-4 ml-1" />}
               </a>
             ))}
           </nav>
@@ -141,567 +167,6 @@ const HeroSection = () => {
   );
 };
 
-// ========================================
-// COMPONENT 3: Players Filter Component
-// ========================================
-const PlayersFilter = ({ selectedAcademy, setSelectedAcademy, selectedPosition, setSelectedPosition }) => {
-  const academyOptions = [
-    'U-10 Academy',
-    'U-12 Academy',
-    'U-14 Academy',
-    'U-16 Academy',
-    'U-18 Academy',
-  ];
-
-  const positionOptions = [
-    'Goalkeeper',
-    'Defender',
-    'Midfielder',
-    'Forward',
-  ];
-
-  return (
-    <div className="flex flex-col sm:flex-row gap-4 max-w-3xl mx-auto px-4">
-      <div className="flex-1">
-        <select
-          value={selectedAcademy}
-          onChange={(e) => setSelectedAcademy(e.target.value)}
-          className="w-full px-5 py-4 bg-white border-2 border-blue-500 rounded-lg text-blue-600 font-semibold text-base focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-600 transition-all cursor-pointer shadow-sm hover:shadow-md"
-        >
-          <option value="">Semua Akademi</option>
-          {academyOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="flex-1">
-        <select
-          value={selectedPosition}
-          onChange={(e) => setSelectedPosition(e.target.value)}
-          className="w-full px-5 py-4 bg-white border-2 border-blue-500 rounded-lg text-blue-600 font-semibold text-base focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-600 transition-all cursor-pointer shadow-sm hover:shadow-md"
-        >
-          <option value="">Semua Posisi</option>
-          {positionOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      </div>
-    </div>
-  );
-};
-
-// ========================================
-// COMPONENT 4: Players Section Component
-// ========================================
-// const PlayersSection = ({ selectedAcademy, setSelectedAcademy, selectedPosition, setSelectedPosition }) => {
-//   return (
-//     <section className="py-16 sm:py-20 bg-white" id="academy">
-//       <div className="container mx-auto px-4">
-//         {/* Section Header */}
-//         <div className="text-center mb-12">
-//           <p className="text-gray-500 text-sm sm:text-base uppercase tracking-widest mb-3 font-semibold">
-//             Elang Mas Academy
-//           </p>
-//           <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-blue-600 mb-8">
-//             PEMAIN KAMI
-//           </h2>
-//         </div>
-
-//         {/* Filter Dropdowns */}
-//         <div className="mb-12">
-//           <PlayersFilter 
-//             selectedAcademy={selectedAcademy}
-//             setSelectedAcademy={setSelectedAcademy}
-//             selectedPosition={selectedPosition}
-//             setSelectedPosition={setSelectedPosition}
-//           />
-//         </div>
-
-//         {/* No Players Message */}
-//         <div className="text-center py-16">
-//           <div className="inline-block p-8 sm:p-12 bg-gray-50 rounded-2xl shadow-lg">
-//             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-//               <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-//                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-//               </svg>
-//             </div>
-//             <p className="text-xl sm:text-2xl text-gray-700 font-bold mb-2">
-//               Player tidak ditemukan
-//             </p>
-//             <p className="text-gray-500 text-sm sm:text-base max-w-md mx-auto">
-//               Silakan coba filter lain atau hubungi kami untuk informasi lebih lanjut tentang pemain kami
-//             </p>
-//           </div>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// };
-
-// ========================================
-
-// COMPONENT 3: Player Card Component
-
-// ========================================
-
-const PlayerCard = ({ player }) => {
-
-  return (
-
-    <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
-
-      <div className="aspect-[3/4] bg-gray-100 overflow-hidden">
-
-        <img 
-
-          src={player.image} 
-
-          alt={player.name}
-
-          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-
-        />
-
-      </div>
-
-      <div className="p-4 text-center">
-
-        <h3 className="font-bold text-gray-900 text-lg mb-1">{player.name}</h3>
-
-        <p className="text-sm text-gray-600">{player.academy}</p>
-
-      </div>
-
-    </div>
-
-  );
-
-};
-
-
-
-// ========================================
-
-// COMPONENT 4: Coach Card Component
-
-// ========================================
-
-const CoachCard = ({ coach }) => {
-
-  return (
-
-    <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
-
-      <div className="aspect-[3/4] bg-gray-100 overflow-hidden">
-
-        <img 
-
-          src={coach.image} 
-
-          alt={coach.name}
-
-          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-
-        />
-
-      </div>
-
-      <div className="p-4 text-center">
-
-        <h3 className="font-bold text-gray-900 text-lg mb-1">{coach.name}</h3>
-
-        <p className="text-sm text-gray-600 mb-1">{coach.position}</p>
-
-        <p className="text-xs text-gray-500">{coach.license}</p>
-
-      </div>
-
-    </div>
-
-  );
-
-};
-
-
-
-// ========================================
-
-// COMPONENT 5: Academy Section Component
-
-// ========================================
-
-const AcademySection = () => {
-
-  const [activeTab, setActiveTab] = useState('pemain');
-
-  const [selectedAcademy, setSelectedAcademy] = useState('');
-
-  const [selectedPosition, setSelectedPosition] = useState('');
-
-
-
-  const academyOptions = [
-
-    'Semua Akademi',
-
-    'U-10 Academy',
-
-    'U-12 Academy',
-
-    'U-14 Academy',
-
-    'U-16 Academy',
-
-    'U-18 Academy',
-
-  ];
-
-
-
-  const positionOptions = [
-
-    'Goal Keeper',
-
-    'Defender',
-
-    'Midfielder',
-
-    'Forward',
-
-  ];
-
-
-
-  // Sample Players Data
-
-  const players = [
-
-    {
-
-      id: 1,
-
-      name: 'PEREZ VALENTINO IMANUEL',
-
-      academy: 'ELANG MASCENDERAWASIH 2009',
-
-      image: 'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=400&q=80',
-
-    },
-
-    {
-
-      id: 2,
-
-      name: 'ALESANDRO BERNARD A',
-
-      academy: 'ELANG MASCENDERAWASIH 2009',
-
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
-
-    },
-
-    {
-
-      id: 3,
-
-      name: 'RAUL DAVID JAMES ALVARO',
-
-      academy: 'ELANG MASCENDERAWASIH 2009',
-
-      image: 'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=400&q=80',
-
-    },
-
-    {
-
-      id: 4,
-
-      name: 'ALEXANDRO DANIELLO',
-
-      academy: 'ELANG MASKAKATUA 2010',
-
-      image: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400&q=80',
-
-    },
-
-    {
-
-      id: 5,
-
-      name: 'MICHAEL JORDAN',
-
-      academy: 'ELANG MASCENDERAWASIH 2009',
-
-      image: 'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=400&q=80',
-
-    },
-
-    {
-
-      id: 6,
-
-      name: 'RAFAEL SANTOS',
-
-      academy: 'ELANG MASKAKATUA 2010',
-
-      image: 'https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=400&q=80',
-
-    },
-
-    {
-
-      id: 7,
-
-      name: 'DIEGO MARTINEZ',
-
-      academy: 'ELANG MASCENDERAWASIH 2009',
-
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
-
-    },
-
-    {
-
-      id: 8,
-
-      name: 'LUCAS FERNANDEZ',
-
-      academy: 'ELANG MASKAKATUA 2010',
-
-      image: 'https://images.unsplash.com/photo-1557862921-37829c790f19?w=400&q=80',
-
-    },
-
-  ];
-
-
-
-  // Sample Coaches Data
-
-  const coaches = [
-
-    {
-
-      id: 1,
-
-      name: 'JOHN ANDERSON',
-
-      position: 'Head Coach',
-
-      license: 'UEFA Pro License',
-
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80',
-
-    },
-
-    {
-
-      id: 2,
-
-      name: 'ROBERT WILLIAMS',
-
-      position: 'Assistant Coach',
-
-      license: 'AFC A License',
-
-      image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80',
-
-    },
-
-    {
-
-      id: 3,
-
-      name: 'DAVID MARTINEZ',
-
-      position: 'Goalkeeper Coach',
-
-      license: 'AFC B License',
-
-      image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80',
-
-    },
-
-    {
-
-      id: 4,
-
-      name: 'JAMES TAYLOR',
-
-      position: 'Fitness Coach',
-
-      license: 'Certified Fitness Trainer',
-
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
-
-    },
-
-  ];
-
-
-
-  return (
-
-    <section className="py-16 bg-gray-50" id="academy">
-
-      <div className="container mx-auto px-4">
-
-        
-
-        {/* Tabs */}
-
-        <div className="flex justify-center mb-8">
-
-          <div className="bg-white rounded-lg shadow-md p-1 inline-flex">
-
-            <button
-
-              onClick={() => setActiveTab('pemain')}
-
-              className={`px-8 py-3 rounded-md font-semibold transition-all duration-200 ${
-
-                activeTab === 'pemain'
-
-                  ? 'bg-blue-600 text-white'
-
-                  : 'text-gray-600 hover:text-blue-600'
-
-              }`}
-
-            >
-
-              Pemain
-
-            </button>
-
-            <button
-
-              onClick={() => setActiveTab('coach')}
-
-              className={`px-8 py-3 rounded-md font-semibold transition-all duration-200 ${
-
-                activeTab === 'coach'
-
-                  ? 'bg-blue-600 text-white'
-
-                  : 'text-gray-600 hover:text-blue-600'
-
-              }`}
-
-            >
-
-              Coach
-
-            </button>
-
-          </div>
-
-        </div>
-
-
-
-        {/* Filters - Only show for Pemain tab */}
-
-        {activeTab === 'pemain' && (
-
-          <div className="flex flex-col sm:flex-row gap-4 max-w-3xl mx-auto mb-12">
-
-            <select
-
-              value={selectedAcademy}
-
-              onChange={(e) => setSelectedAcademy(e.target.value)}
-
-              className="flex-1 px-5 py-3 bg-white border-2 border-blue-500 rounded-lg text-blue-600 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer shadow-sm hover:shadow-md transition-all"
-
-            >
-
-              {academyOptions.map((option) => (
-
-                <option key={option} value={option}>
-
-                  {option}
-
-                </option>
-
-              ))}
-
-            </select>
-
-            
-
-            <select
-
-              value={selectedPosition}
-
-              onChange={(e) => setSelectedPosition(e.target.value)}
-
-              className="flex-1 px-5 py-3 bg-white border-2 border-blue-500 rounded-lg text-blue-600 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer shadow-sm hover:shadow-md transition-all"
-
-            >
-
-              <option value="">Semua Posisi</option>
-
-              {positionOptions.map((option) => (
-
-                <option key={option} value={option}>
-
-                  {option}
-
-                </option>
-
-              ))}
-
-            </select>
-
-          </div>
-
-        )}
-
-
-
-        {/* Content */}
-
-        {activeTab === 'pemain' ? (
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-
-            {players.map((player) => (
-
-              <PlayerCard key={player.id} player={player} />
-
-            ))}
-
-          </div>
-
-        ) : (
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 max-w-5xl mx-auto">
-
-            {coaches.map((coach) => (
-
-              <CoachCard key={coach.id} coach={coach} />
-
-            ))}
-
-          </div>
-
-        )}
-
-      </div>
-
-    </section>
-
-  );
-
-};
-
-
-
 
 
 // ========================================
@@ -767,98 +232,87 @@ const AboutSection = () => {
   );
 };
 
-// ========================================
-// COMPONENT 6: Footer Component
-// ========================================
-const Footer = () => {
+
+// ==================================
+// Scrool TOP
+// ==================================
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
+
+const LandingPage = ({ mobileMenuOpen, setMobileMenuOpen }) => {
+  const { state } = useLocation();
+
+  useEffect(() => {
+    // Cek apakah ada request scroll dari halaman lain
+    if (state?.scrollTo) {
+      const element = document.getElementById(state.scrollTo);
+      if (element) {
+        // Beri sedikit delay agar halaman render sempurna dulu
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+      // Bersihkan state agar tidak scroll terus saat refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [state]);
+
   return (
-    <footer className="bg-gradient-to-b from-blue-900 to-blue-950 text-white pt-12 pb-6">
-      <div className="container mx-auto px-4">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-          {/* About Column */}
-          <div>
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-12 h-12 bg-transparant rounded-lg flex items-center justify-center">
-              <img 
-                src={logoElangMas} 
-                alt="Logo Elang Mas"
-                className="w-full h-full object-contain" 
-              />
-              </div>
-              <h3 className="text-xl font-bold">Elang Mas Academy</h3>
-            </div>
-            <p className="text-blue-200 text-sm leading-relaxed">
-              Membangun generasi pemain sepak bola Pageralang yang berkualitas dan berprestasi di tingkat lokal, nasional maupun internasional.
-            </p>
-          </div>
-
-          {/* Contact Column */}
-          <div>
-            <h3 className="text-lg font-bold mb-4">Kontak</h3>
-            <div className="space-y-3 text-blue-200 text-sm">
-              <p className="flex items-start">
-                <MapPin className="w-4 h-4 mr-2 mt-1 flex-shrink-0" />
-                <span>Krida Lowonah Pageralang, Banyumas, Jawa Tengah</span>
-              </p>
-              <p className="flex items-center">
-                <Mail className="w-4 h-4 mr-2 flex-shrink-0" />
-                <span>info@elangmasfootballacademy.com</span>
-              </p>
-            </div>
-          </div>
-
-          {/* Social Media Column */}
-          <div>
-            <h3 className="text-lg font-bold mb-4">Ikuti Kami</h3>
-            <p className="text-blue-200 text-sm mb-4">
-              Dapatkan update terbaru tentang aktivitas dan prestasi pemain kami
-            </p>
-            <div className="flex space-x-3">
-              <a href="#" className="w-10 h-10 bg-blue-800 hover:bg-blue-700 rounded-full flex items-center justify-center transition-colors duration-200">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 bg-blue-800 hover:bg-blue-700 rounded-full flex items-center justify-center transition-colors duration-200">
-                <Youtube className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 bg-blue-800 hover:bg-blue-700 rounded-full flex items-center justify-center transition-colors duration-200">
-                <Mail className="w-5 h-5" />
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {/* Copyright */}
-        <div className="border-t border-blue-800 pt-6 mt-6">
-          <p className="text-center text-blue-300 text-sm">
-            &copy; 2026 Elang Mas Academy. All rights reserved.
-          </p>
-        </div>
-      </div>
-    </footer>
+    <>
+      <div id="home"><HeroSection /></div>
+      <JadwalSection />
+      <div id="academy"><Academy /></div>
+      <div id="about"><AboutSection /></div>
+    </>
   );
 };
+
 
 // ========================================
 // MAIN APP COMPONENT
 // ========================================
 const App = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [selectedAcademy, setSelectedAcademy] = useState('');
-  const [selectedPosition, setSelectedPosition] = useState('');
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header 
-        mobileMenuOpen={mobileMenuOpen} 
-        setMobileMenuOpen={setMobileMenuOpen} 
-      />
-      <HeroSection />
-      <AcademySection />
+    <Router>
+      <div className="min-h-screen bg-gray-50">
+        {/* Header tetap di luar Routes agar selalu muncul di semua halaman */}
+        <Header 
+          mobileMenuOpen={mobileMenuOpen} 
+          setMobileMenuOpen={setMobileMenuOpen} 
+        />
 
-      <AboutSection />
-      <Footer />
-    </div>
+        <Routes>
+          {/* Halaman Utama */}
+          
+          <Route path="/" element={
+            <LandingPage 
+              mobileMenuOpen={mobileMenuOpen} 
+              setMobileMenuOpen={setMobileMenuOpen} 
+            />
+          } />
+
+          {/* Halaman Detail Pemain & Pelatih - ID diambil secara dinamis */}
+          <Route path="/pemain/:id" element={<PlayerDetail />} />
+          <Route path="/pelatih/:id" element={<PelatihDetail />} />
+        </Routes>
+
+        {/* Footer tetap di luar agar selalu muncul */}
+        <Footer/>
+      </div>
+    </Router>
   );
 };
+
 
 export default App;
