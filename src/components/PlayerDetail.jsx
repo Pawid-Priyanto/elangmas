@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../api/index';
-import { ChevronLeft, Timer, Target, Users, ShieldAlert, Award, Footprints } from 'lucide-react';
+import { ChevronLeft, Timer, Target, Users, ShieldAlert, Award, Footprints, Loader2 } from 'lucide-react';
 
 const PlayerDetail = () => {
   const { id } = useParams();
@@ -22,7 +22,7 @@ const PlayerDetail = () => {
     fetchDetail();
   }, [id]);
 
-  if (loading) return <div className="h-screen flex items-center justify-center italic text-blue-600">Loading Talent...</div>;
+  if (loading) return <div className="h-screen flex items-center justify-center italic text-blue-600"><Loader2/></div>;
   if (!player) return <div className="text-center py-20 font-bold">Pemain tidak ditemukan.</div>;
 
   // Hitung Umur

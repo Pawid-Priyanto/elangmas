@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../api/index';
-import { ChevronLeft, Trophy, Users, BookOpen, Star, Calendar, ShieldCheck } from 'lucide-react';
+import { ChevronLeft, Trophy, Users, BookOpen, Star, Calendar, ShieldCheck, Loader2 } from 'lucide-react';
 
 const CoachDetail = () => {
   const { id } = useParams();
@@ -22,7 +22,7 @@ const CoachDetail = () => {
     fetchDetail();
   }, [id]);
 
-  if (loading) return <div className="h-screen flex items-center justify-center italic text-blue-600">Loading Coach Data...</div>;
+  if (loading) return <div className="h-screen flex items-center justify-center italic text-blue-600"><Loader2/></div>;
   if (!coach) return <div className="text-center py-20 font-bold">Pelatih tidak ditemukan.</div>;
 
   return (
